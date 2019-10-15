@@ -71,7 +71,7 @@ You can consult here two notebooks.
 `perf_report.ipynb` contains a notebook with performance investigations on the cost of tracing within the OCaml runtime in our implementation.
 
 Clicking on these files on Github should open an HTML view of the notebooks.
-You can as well open the HTML version available in the repository.
+You can as well open the PDF version available in the repository.
 
 To interact with the notebooks using jupyter:
 ```shell
