@@ -32,7 +32,7 @@ It has been ported to OCaml trunk and made to match what the instrumented runtim
 
 [Port to OCaml trunk of multicore's tracing](https://github.com/Engil/ocaml/blob/eventlog/runtime/eventlog.c)
 
-Sample trace for the trunk port can be found in the `traces` directory, `numal-lu-decomposition.json`, you can open it through Chrome at `chrome://tracing`.
+Sample trace for the trunk port can be found in `sample_traces` subdirectories, every `.json` file is a `catapult` file, you can open it through Chrome at `chrome://tracing`.
 
 ### Common Trace Format
 
@@ -64,22 +64,20 @@ engil@monsieurlordinateur:~/Dev/gc-tracing$ babeltrace traces/ctf/ | head
 [01:00:00.001246657] (+0.000000248) 0 exit: { phase = ( "major/mark_main" : container = 11 ) }
 ```
 
-## Comparing CTF and Catapult
+### CTF playground and performance report
 
-Catapult's viewer is pretty useful, but the available formats for serialization are a bit heavy
-CTF's binary format make it easier to write fast serializers in a tight package.
+You can consult here two notebooks.
+`ctf.ipynb` contains a notebook showcasing how to interact with `4.10.0+ctf`'s CTF logs.
+`perf_report.ipynb` contains a notebook with performance investigations on the cost of tracing within the OCaml runtime in our implementation.
 
-Some early numbers from a payload size point of view:
+Clicking on these files on Github should open an HTML view of the notebooks.
+You can as well open the HTML version available in the repository.
 
-
+To interact with the notebooks using jupyter:
+```shell
+$ cd docker
+$ sudo docker build -t sandmark .
+$ cd ..
+$ docker run -v `pwd`:/analyze -p 8888:8888 -it sandmark
+$ jupyter notebook --ip=0.0.0.0 --allow-root
 ```
-engil@monsieurlordinateur:~/Dev/sandmark$ find _build/ -type f -name '*.catapult' -exec du -ch {} + | grep total$
-6,0G	total
-engil@monsieurlordinateur:~/Dev/sandmark$ find _build/ -type f -name '*.ctf' -exec du -ch {} + | grep total$
-1006M	total
-```
-
-This CTF schema can be greatly improved upon in terms of size (see the `metadata` file), as well as execution time.
-Proper benchmark for overhead (comparing `trunk` vs `ctf` vs `catapult`) are coming sometime soon.
-
-CTF's streaming approach also makes it preferrable to trace OCaml's multicore's runtime vs the "one json to rule them all" approach in the Catapult format. Each domain could easily output their own stream and the metadata file could take care of cross referencing every moving part from within the program's lifetime.
