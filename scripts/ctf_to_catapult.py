@@ -6,7 +6,7 @@ import babeltrace as bt
 def event_to_catapult(ev):
     out = {}
     out['ts'] = "{}.{:03d}".format(ev['timestamp'] // 1000, ev['timestamp'] % 1000)
-    out['pid'] = 0
+    out['pid'] = ev['pid']
     if ev['id'] == 0:
         out['ph'] = 'B'
         out['name'] = ev['phase']
@@ -21,6 +21,10 @@ def event_to_catapult(ev):
         out['args'] = {'value': ev['count']}
         out['name'] = ev['bucket']
         out['ph'] = 'C'
+    if ev['id'] == 4:
+       out['ph'] = 'X'
+       out['name'] = 'eventlog/flush'
+       out['dur'] = "{}.{:03d}".format(ev['duration'] // 1000, ev['duration'] % 1000)
     return out
 
 def main():
@@ -32,7 +36,7 @@ def main():
     tr.add_trace(dir, 'ctf')
     catapult_objects = list()
     for event in tr.events:
-        if event['id'] <= 3:
+        if event['id'] <= 4:
             catapult_objects.append(event_to_catapult(event))
     catapult = {
         'displayTimeUnit': 'ns',
