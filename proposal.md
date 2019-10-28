@@ -113,5 +113,6 @@ We provide a set of scripts that can be used as a base to run data analysis on o
 `ctf_to_catapult.py` acts as a converter from our trace format to Chrome's eventlog format. Once converted, such traces can then be loaded inside Chrome's `chrome://tracing`.
 
 We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/blob/master/ctf.pdf)).
+This notebook showcase basic interactions our implementation's trace format.
 
 We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
