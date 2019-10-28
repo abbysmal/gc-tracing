@@ -85,7 +85,7 @@ In *CTF*, a *metadata* stream is required in order to allow a CTF codec to parse
 the various binary streams composing a trace.
 This metadata stream is itself written using CTF's own `TSDL` description format.
 
-An annotated version can be found at this address: [https://github.com/Engil/gc-tracing/blob/master/proposal_metadata](https://github.com/Engil/gc-tracing/blob/master/proposal_metadata)
+An annotated version can be found at this address: [https://github.com/Engil/gc-tracing/blob/master/metadata](https://github.com/Engil/gc-tracing/blob/master/metadata)
 
 Some questions are still open in our implementation:
 
