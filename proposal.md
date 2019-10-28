@@ -9,8 +9,7 @@ and process them offline in order to profile and debug performance problems.
 
 Multicore OCaml emit such event traces in a format compatible with the
 [catapult](https://chromium.googlesource.com/catapult/) toolchain.
-A catapult trace take the form of a `json` file (see the [format description]
-(https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU)),
+A catapult trace take the form of a `json` file (see the [format description](https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU)),
 that can then be read using Google Chrome's own trace viewer, `chrome://tracing`.
 
 Our proposal is to introduce the event tracing system in OCaml,
@@ -71,16 +70,14 @@ Events are flushed in a single CTF *stream*.
 
 The initial target is to collect enough information to be able to match insight
 provided by the instrumented runtime.
-
 As such, basic tooling will be provided in the spirit of the helpers provided
 with the source distribution for the instrumented runtime.
-
 Showing minor/major collections distribution over the
 lifetime of the program, metrics on allocations, and timing on the various
 phases within GC cycles.
 
 The traces can be extended further in the future by versioning the format,
-so metrics could easily be added incrementally and the tooling around it can evolve gracefully.
+so the tooling around it can evolve gracefully.
 
 ## OCaml CTF metadata
 
@@ -88,19 +85,14 @@ In *CTF*, a *metadata* stream is required in order to allow a CTF codec to parse
 the various binary streams composing a trace.
 This metadata stream is itself written using CTF's own `TSDL` description format.
 
-An annotated version can be found at this address:
-
-[https://github.com/Engil/gc-tracing/blob/master/proposal_metadata](https://github.com/Engil/gc-tracing/blob/master/proposal_metadata)
+An annotated version can be found at this address: [https://github.com/Engil/gc-tracing/blob/master/proposal_metadata](https://github.com/Engil/gc-tracing/blob/master/proposal_metadata)
 
 Some questions are still open in our implementation:
 
 A complete CTF trace should contain the metadata stream as well.
-
 In its current form (and implementation), its definition is not fully static: the `byte_order`
 metadata field must be provided depending on which platform the runtime has been executed on.
-
 It has not been decided yet which approach should be taken to distribute the metadata file.
-
 Proposed solutions are to have the runtime generate metadata files, or distribute them as a part of the
 compiler installation.
 
@@ -120,6 +112,6 @@ We provide a set of scripts that can be used as a base to run data analysis on o
 
 `ctf_to_catapult.py` acts as a converter from our trace format to Chrome's eventlog format. Once converted, such traces can then be loaded inside Chrome's `chrome://tracing`.
 
-We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/ctf.pdf)).
+We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/blob/master/ctf.pdf)).
 
-We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/sample_traves) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
+We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
