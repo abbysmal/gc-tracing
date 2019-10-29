@@ -28,6 +28,13 @@ This notebook showcase basic interactions our implementation's trace format.
 
 We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
 
+### Screenshot from `chrome://tracing`
+
+
+<img src="/assets/1.png" width="400px">
+<img src="/assets/2.png" width="400px">
+<img src="/assets/3.png" width="400px">
+
 
 ## Implementation
 
