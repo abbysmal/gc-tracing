@@ -30,10 +30,17 @@ We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc
 
 ### Screenshot from `chrome://tracing`
 
-
+#### A zoomed-in view on a particular major collection event
 <img src="/assets/1.png" width="400px">
+
+#### Duration stats on major collections during the programs lifetime
 <img src="/assets/2.png" width="400px">
+
+#### Overview of the trace viewer window on the `zarith` sandmark benchmark
 <img src="/assets/3.png" width="400px">
+
+#### Overview of the trace viewer window on the `js_of_ocaml` sandmark benchmark
+<img src="/assets/4.png" width="400px">
 
 
 ## Implementation
