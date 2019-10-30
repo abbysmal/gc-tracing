@@ -116,7 +116,7 @@ Two primitives are exposed by the runtime to pause and resume tracing: `Gc.event
 
 ### Performance measurements
 
-[Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure performance impact of our implementatioThe report can be found [here](https://github.com/Engil/gc-tracing/blob/master/perf_report.pdf).
+[Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure the performance impact of eventlog on the runtime. The report can be found [here](https://github.com/Engil/gc-tracing/blob/master/perf_report.pdf).
 
 The associated Jupyter notebook can be found as well for further analysis in this [repository](https://github.com/Engil/gc-tracing). A Docker image can be built for simpler setup.
 
