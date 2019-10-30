@@ -37,7 +37,7 @@ We provide a set of scripts that can be used as a base to run data analysis on o
 We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/blob/master/ctf.pdf)).
 This notebook showcase basic interactions our implementation's trace format.
 
-We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
+We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/blob/master/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
 
 ### Screenshot from `chrome://tracing`
 
