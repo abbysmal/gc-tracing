@@ -121,7 +121,17 @@ It has not been decided yet which approach should be taken to distribute the met
 Proposed solutions are to have the runtime generate metadata files, or distribute them as a part of the
 compiler installation.
 
-#### Performance measurements
+### Control plane
+
+Our implementation provides only simple controls over eventlog's behavior.
+
+Any program built with the OCaml compiler on this branch can be traced by executing the said program with `OCAML_EVENTLOG_ENABLED=1`.
+
+This will output the trace in a `caml-eventlog-pid` file in the running directory. The user can also specify an alternative name for the file using the `OCAML_EVENTLOG_FILENAME` env variable.
+
+Two primitives are exposed by the runtime to pause and resume tracing: `Gc.eventlog_pause` and `Gc.eventlog_resume`.
+
+### Performance measurements
 
 [Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure performance impact of our implementation.
 
