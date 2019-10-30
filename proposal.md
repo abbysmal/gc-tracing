@@ -11,8 +11,19 @@ Multicore OCaml emit such event traces in a format compatible with the
 [catapult](https://chromium.googlesource.com/catapult/) toolchain.
 A catapult trace take the form of a `json` file (see the [format description](https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU)),
 that can then be read using Google Chrome's own trace viewer, `chrome://tracing`.
-OCaml Multicore's eventlog implementation proved itself very useful in debugging GC performance issues.
 
+OCaml ships with an instrumented version of the runtime which output logs (in a custom text format) containing informations about GC event and counters.
+Eventlog is a tracing framework based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)), enabling the collection of counters and timings in the runtime with a low memory and CPU overhead.
+
+
+The statistics gathered, coupled with the available tooling (`chrome://tracing`),
+enable core OCaml and application developers to profile the runtime activity: said profile can then be correlated with an application profile to get a full overview of an application's lifetime.
+An overview of the garbage collector's timeline also proved very useful to the
+Multicore OCaml developers by enabling ways to visualize contention points, relationship between GC phases, and collection event timings.
+
+The *Tooling* section provides samples and screenshots of the tooling available with our implementation
+
+The implementation is further discussed in the *Implementation* section, and the future of our developments on this project in the last section.
 
 
 ## Tooling
@@ -86,7 +97,7 @@ We decided to work with *CTF* for the following reasons:
 - Ecosystem: the CTF ecosystem comes with various visualization tools and a
   C reference implementation bundled with a simple to use Python library.
 - Build the foundation to a tracing experience within the OCaml ecosystem:
-  CTF is a straightforaward and generic format. Several users reported using it
+  CTF is a straightforward and generic format. Several users reported using it
   successfully within their own projects.
   We could attempt at providing a unified tracing user experience for the OCaml system.
 
