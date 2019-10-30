@@ -1,7 +1,7 @@
 # [RFC] Eventlog tracing system
 
-OCaml currently ships with an instrumented version of the runtime which collects counters and timings for GC events and output logs in a custom text format.
-Eventlog is a proposed replacement framework that preserve the existing metrics and adds support for GC trace events in a low-overhead implementation based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)).
+OCaml currently ships with an instrumented version of the runtime which collects counters and timings for GC events and outputs logs in a custom text format.
+Eventlog is a proposed replacement framework, which preserves the existing metrics and adds support for GC trace events in a low-overhead implementation based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)).
 
 Based on an initial design used in OCaml Multicore (inspired by GHC's [ThreadScope](https://wiki.haskell.org/ThreadScope)), this proposal includes an implementation providing:
 - The eventlog tracing facility, sitting in the regular OCaml runtime (instead of residing in an alternative runtime to link like the instrumented runtime does.)
@@ -33,14 +33,14 @@ Multicore OCaml developers by enabling ways to visualize contention points, rela
 
 The implementation is further discussed in the *Implementation* section.
 
-The *Tooling* section provides samples and screenshots of the tooling available with our implementation
+The *Tooling* section provides samples and screenshots of the tooling available with our implementation.
 
 We then discuss the future of our developments on this project in the last section.
 
 ## Implementation
 
-The tracing system port will remain in spirit the same as the one found in OCaml Multicore.
-This PR provide our initial implementation of the eventlog framework,.
+Our eventlog port to trunk remains in spirit the same as the one found in OCaml Multicore.
+This PR provide our initial implementation of the eventlog framework.
 
 ### Overview
 
@@ -53,16 +53,13 @@ An entry is added into the buffer, and if the buffer is full, a flush is trigger
 
 Events are flushed in a single CTF *stream*.
 
-The initial target is to collect enough information to be able to match insight
+The initial target was to collect enough information to be able to match insight
 provided by the instrumented runtime.
-As such, basic tooling will be provided in the spirit of the helpers provided
-with the source distribution for the instrumented runtime.
-Showing minor/major collections distribution over the
+As such, basic tooling was provided in the spirit of the helpers found
+with the source distribution, to be used with the instrumented runtime. (`ocaml-instr-graph` and `ocaml-instr-report`)
+Minor/major collections distribution over the
 lifetime of the program, metrics on allocations, and timing on the various
-phases within GC cycles.
-
-The traces can be extended further in the future by versioning the format,
-so the tooling around it can evolve gracefully.
+phases within GC cycles can be easily visualized with the evailable tooling.
 
 ### Format
 
@@ -72,7 +69,7 @@ Catapult format, the [Common Trace Format](https://diamon.org/ctf/) is used in o
 We decided to work with *CTF* for the following reasons:
 - Performance: as a binary format, better performances could be easily achieved
   on the serializing front.
-- Streaming: the CTF format is comprised of possibly several *stream* holding the event payloads.
+- Streaming: the CTF format is comprised of possibly several *streams* holding the event payloads.
   This approach maps well with OCaml Multicore (where each domain could stream its own set of events).
   The notion of stream is also unrelated to the transport mechanism chosen by the implementor.
   As such, it is possible to have a tracer communicate over the network with very low overhead.
@@ -99,7 +96,7 @@ Some questions are still open in our implementation:
 
 A complete CTF trace should contain the metadata stream as well.
 In its current form (and implementation), its definition is not fully static: the `byte_order`
-metadata field must be provided depending on which platform the runtime has been executed on.
+metadata field depends on which platform the runtime has been executed on.
 It has not been decided yet which approach should be taken to distribute the metadata file.
 Proposed solutions are to have the runtime generate metadata files, or distribute them as a part of the
 compiler installation.
@@ -145,14 +142,14 @@ An OCaml binding to the `babeltrace` library is planned and would enable trace p
 We aim to merge the tracing runtime with a feature level at least matching the instrumented runtime's.
 We believe the tracing runtime can have a sufficiently low overhead so that it
 can sit in the regular runtime without overly impacting performances in programs
-not making use of the feature.
+that do not use the feature.
 
 Removing it would as well speed up OCaml's compilation, by not having to build an extra runtime.
 A more straightforward approach to statistics gathering sitting in the main runtime would also simplify maintenance:
 While working on porting the `eventlog` framework to trunk we found a long standing
 inconsistency within the instrumented runtime's output. (see GPR #9004)
 
-The inclusion of the eventlog framework adds as well a bit of duplicate noise in the codebase, as it does trace similar metrics as the instrumented runtime.
+The inclusion of the eventlog framework adds as well a bit of duplicate noise in the codebase, as it trace similar codepaths as the instrumented runtime.
 
 As such we will submit a second PR to deprecate the instrumented runtime from the OCaml distribution.
 
@@ -162,6 +159,6 @@ We plan to extend the eventlog framework further by adding support for user defi
 
 User defined events would allow developers to implement their own set of events from the application level. Such events could then be easily correlated with the runtime's own set of events.
 
-We also had discussion about opening new extraction channels for eventlog's streams. This would prove useful for production systems or Mirage application (extracting traces via network or a serial port... ect).
+We also had discussions about opening new extraction channels for eventlog's streams. This would prove useful for production systems or Mirage application (extracting traces via network or a serial port... etc).
 
 The timeline for these features is undefined as discussions about their respective designs are still ongoing.
