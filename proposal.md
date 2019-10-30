@@ -1,43 +1,16 @@
 # [RFC] Eventlog tracing system
 
-Multicore OCaml includes an event tracing system that act as a GC
-profiling tool for the development effort on the multicore runtime.
+OCaml currently ships with an instrumented version of the runtime which collects counters and timings for GC events and output logs in a custom text format.
+Eventlog is a proposed replacement framework that preserve the existing metrics and adds support for GC trace events in a low-overhead implementation based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)).
 
-Inspired by GHC's [ThreadScope](https://wiki.haskell.org/ThreadScope), the idea
-is provide a low-overhead framework to collect runtime events and statistics,
-and process them offline in order to profile and debug performance problems.
+Based on an initial design used in OCaml Multicore (inspired by GHC's [ThreadScope](https://wiki.haskell.org/ThreadScope), this proposal includes an implementation providing:
+- The eventlog tracing facility, sitting in the regular OCaml runtime (instead of residing in an alternative runtime to link like the instrumented runtime does.)
+- A first trace metadata definition including a set of metrics and counters preserving the feature level of the instrumented runtime.
 
-Multicore OCaml emit such event traces in a format compatible with the
-[catapult](https://chromium.googlesource.com/catapult/) toolchain.
+We provide as well a [script](https://github.com/Engil/gc-tracing/blob/master/scripts/ctf_to_catapult.py) to convert such traces to the
+[catapult](https://chromium.googlesource.com/catapult/) event format.
 A catapult trace take the form of a `json` file (see the [format description](https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU)),
 that can then be read using Google Chrome's own trace viewer, `chrome://tracing`.
-
-OCaml ships with an instrumented version of the runtime which output logs (in a custom text format) containing informations about GC event and counters.
-Eventlog is a tracing framework based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)), enabling the collection of counters and timings in the runtime with a low memory and CPU overhead.
-
-
-The statistics gathered, coupled with the available tooling (`chrome://tracing`),
-enable core OCaml and application developers to profile the runtime activity: said profile can then be correlated with an application profile to get a full overview of an application's lifetime.
-An overview of the garbage collector's timeline also proved very useful to the
-Multicore OCaml developers by enabling ways to visualize contention points, relationship between GC phases, and collection event timings.
-
-The *Tooling* section provides samples and screenshots of the tooling available with our implementation
-
-The implementation is further discussed in the *Implementation* section, and the future of our developments on this project in the last section.
-
-
-## Tooling
-
-The instrumented runtime ships with two scripts allowing to display and graph various datapoints from the GC's lifetime.
-
-We provide a set of scripts that can be used as a base to run data analysis on our implementation's traces.
-
-`ctf_to_catapult.py` acts as a converter from our trace format to Chrome's eventlog format. Once converted, such traces can then be loaded inside Chrome's `chrome://tracing`.
-
-We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/blob/master/ctf.pdf)).
-This notebook showcase basic interactions our implementation's trace format.
-
-We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/blob/master/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
 
 ### Screenshot from `chrome://tracing`
 
@@ -53,6 +26,16 @@ We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc
 #### Overview of the trace viewer window on the `js_of_ocaml` sandmark benchmark
 <img src="/assets/4.png" width="400px">
 
+The statistics gathered, coupled with the available tooling (`chrome://tracing`),
+enable core OCaml and application developers to profile the runtime activity: said profile can then be correlated with an application profile to get a full overview of an application's lifetime.
+An overview of the garbage collector's timeline also proved very useful to the
+Multicore OCaml developers by enabling ways to visualize contention points, relationship between GC phases, and collection event timings.
+
+The implementation is further discussed in the *Implementation* section.
+
+The *Tooling* section provides samples and screenshots of the tooling available with our implementation
+
+We then discuss the future of our developments on this project in the last section.
 
 ## Implementation
 
@@ -92,11 +75,11 @@ We decided to work with *CTF* for the following reasons:
 - Streaming: the CTF format is comprised of possibly several *stream* holding the event payloads.
   This approach maps well with OCaml Multicore (where each domain could stream its own set of events).
   The notion of stream is also unrelated to the transport mechanism chosen by the implementor.
-  As such, it is possible the have a tracer communicate over the network with very low overhead.
+  As such, it is possible to have a tracer communicate over the network with very low overhead.
   (as a MirageOS program would do, for example.)
 - Ecosystem: the CTF ecosystem comes with various visualization tools and a
   C reference implementation bundled with a simple to use Python library.
-- Build the foundation to a tracing experience within the OCaml ecosystem:
+- Prepare the ground for a streamlined tracing experience within the OCaml ecosystem:
   CTF is a straightforward and generic format. Several users reported using it
   successfully within their own projects.
   We could attempt at providing a unified tracing user experience for the OCaml system.
@@ -133,11 +116,25 @@ Two primitives are exposed by the runtime to pause and resume tracing: `Gc.event
 
 ### Performance measurements
 
-[Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure performance impact of our implementation.
-
-The report can be found [here](https://github.com/Engil/gc-tracing/blob/master/perf_report.pdf).
+[Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure performance impact of our implementatioThe report can be found [here](https://github.com/Engil/gc-tracing/blob/master/perf_report.pdf).
 
 The associated Jupyter notebook can be found as well for further analysis in this [repository](https://github.com/Engil/gc-tracing). A Docker image can be built for simpler setup.
+
+## Tooling
+
+The instrumented runtime ships with two scripts allowing to display and graph various datapoints from the GC's lifetime.
+
+We provide a set of scripts that can be used as a base to run data analysis on our implementation's traces.
+
+`ctf_to_catapult.py` acts as a converter from our trace format to Chrome's eventlog format. Once converted, such traces can then be loaded inside Chrome's `chrome://tracing`.
+
+We provide as well an [example `Jupyter` notebook](https://github.com/Engil/gc-tracing/blob/master/ctf.ipynb)(rendered PDF [here](https://github.com/Engil/gc-tracing/blob/master/ctf.pdf)).
+This notebook showcases basic interactions with our implementation's trace format using the babeltrace library.
+
+We made a few example accessible in the [gc-tracing](https://github.com/Engil/gc-tracing/blob/master/sample_traces) repository. `json` files can be loaded into Chrome and are extraced from the related traces found in the various `ctf` subdirectories.
+
+The scripts are prototypes written by reusing the existing ecosystem for CTF traces analysis, mainly using the reference implementation for CTF, `babeltrace`.
+An OCaml binding to the `babeltrace` library is planned and would enable trace processing and analysis from OCaml programs.
 
 ## Eventlog future timeline
 
