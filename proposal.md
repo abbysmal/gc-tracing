@@ -3,7 +3,7 @@
 OCaml currently ships with an instrumented version of the runtime which collects counters and timings for GC events and output logs in a custom text format.
 Eventlog is a proposed replacement framework that preserve the existing metrics and adds support for GC trace events in a low-overhead implementation based on a standardized binary trace format ([CTF](https://diamon.org/ctf/)).
 
-Based on an initial design used in OCaml Multicore (inspired by GHC's [ThreadScope](https://wiki.haskell.org/ThreadScope), this proposal includes an implementation providing:
+Based on an initial design used in OCaml Multicore (inspired by GHC's [ThreadScope](https://wiki.haskell.org/ThreadScope)), this proposal includes an implementation providing:
 - The eventlog tracing facility, sitting in the regular OCaml runtime (instead of residing in an alternative runtime to link like the instrumented runtime does.)
 - A first trace metadata definition including a set of metrics and counters preserving the feature level of the instrumented runtime.
 
@@ -119,6 +119,8 @@ Two primitives are exposed by the runtime to pause and resume tracing: `Gc.event
 [Sandmark](https://github.com/ocaml-bench/sandmark) was employed to measure performance impact of our implementatioThe report can be found [here](https://github.com/Engil/gc-tracing/blob/master/perf_report.pdf).
 
 The associated Jupyter notebook can be found as well for further analysis in this [repository](https://github.com/Engil/gc-tracing). A Docker image can be built for simpler setup.
+
+Early numbers showed a mean slowdown of 1% (comparing an active traced program and the current `trunk`) and a mean slowdown of 0.01% (comparing an non actively traced program with the current `trunk`).
 
 ## Tooling
 
